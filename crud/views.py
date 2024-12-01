@@ -1,8 +1,9 @@
-from rest_framework import generics, permissions
+from rest_framework import generics, permissions, viewsets
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenObtainPairView
-from .serializers import UserSerializer, RegisterSerializer
+from .serializers import UserSerializer, RegisterSerializer, AuthorSerializer, BookSerializer
+from .models import authors, books
 
 # Register API
 class RegisterAPI(generics.GenericAPIView):
@@ -33,3 +34,14 @@ class LogoutAPI(generics.GenericAPIView):
             return Response({"message": "Logout successful."})
         except Exception as e:
             return Response({"error": str(e)}, status=400)
+        
+
+class AuthorViewSet(viewsets.ModelViewSet):
+    queryset = authors.objects.all()
+    serializer_class = AuthorSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+class BookViewSet(viewsets.ModelViewSet):
+    queryset = books.objects.all()
+    serializer_class = BookSerializer
+    permission_classes = [permissions.IsAuthenticated]
